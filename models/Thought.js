@@ -5,7 +5,7 @@ const reactionSchema = new mongoose.Schema({
   reactionBody: {
     type: String,
     required: true,
-    maxlength: 280,
+    maxlength: 300,
   },
   username: {
     type: String,
@@ -22,7 +22,7 @@ const thoughtSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 1,
-    maxlength: 280,
+    maxlength: 300,
   },
   createdAt: {
     type: Date,
