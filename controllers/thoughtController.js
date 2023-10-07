@@ -9,7 +9,7 @@ const thoughtController = {
       res.json(thoughtData);
     } catch (err) {
       console.error(err);
-      res.status(500).json(err);
+      res.status(500).json({ error: 'Failed to fetch thoughts. Please try again later.' });
     }
   },
 
@@ -19,14 +19,15 @@ const thoughtController = {
         .populate('reactions', '-_id -__v')
         .select('-_id -__v');
       if (!thoughtData) {
-        return res.status(404).json({ message: 'Thought not found' });
+        return res.status(404).json({ error: 'Thought not found.' });
       }
       res.json(thoughtData);
     } catch (err) {
       console.error(err);
-      res.status(500).json(err);
+      res.status(500).json({ error: 'Failed to fetch the thought. Please try again later.' });
     }
   },
+  
   createThought: async (req, res) => {
     try {
       const thoughtData = await Thought.create(req.body);
@@ -36,12 +37,12 @@ const thoughtController = {
         { new: true }
       );
       if (!userData) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ error: 'User not found.' });
       }
       res.json(thoughtData);
     } catch (err) {
       console.error(err);
-      res.status(400).json(err);
+      res.status(400).json({ error: 'Failed to create a new thought.' });
     }
   },
 
@@ -53,12 +54,12 @@ const thoughtController = {
         { new: true }
       );
       if (!thoughtData) {
-        return res.status(404).json({ message: 'Thought not found' });
+        return res.status(404).json({ error: 'Thought not found.' });
       }
       res.json(thoughtData);
     } catch (err) {
       console.error(err);
-      res.status(404).json(err);
+      res.status(404).json({ error: 'Failed to update the thought.' });
     }
   },
 
@@ -66,17 +67,17 @@ const thoughtController = {
     try {
       const thoughtData = await Thought.findByIdAndDelete(req.params.thoughtId);
       if (!thoughtData) {
-        return res.status(404).json({ message: 'Thought not found' });
+        return res.status(404).json({ error: 'Thought not found.' });
       }
       const userData = await User.findByIdAndUpdate(
         thoughtData.userId,
         { $pull: { thoughts: req.params.thoughtId } },
         { new: true }
       );
-      res.json({ message: 'Thought deleted successfully' });
+      res.json({ message: 'Thought deleted successfully.' });
     } catch (err) {
       console.error(err);
-      res.status(500).json(err);
+      res.status(500).json({ error: 'Failed to delete the thought.' });
     }
   },
 
@@ -88,12 +89,12 @@ const thoughtController = {
         { new: true }
       );
       if (!thoughtData) {
-        return res.status(404).json({ message: 'Thought not found' });
+        return res.status(404).json({ error: 'Thought not found.' });
       }
       res.json(thoughtData);
     } catch (err) {
       console.error(err);
-      res.status(400).json(err);
+      res.status(400).json({ error: 'Failed to create a new reaction.' });
     }
   },
 
@@ -105,12 +106,12 @@ const thoughtController = {
         { new: true }
       );
       if (!thoughtData) {
-        return res.status(404).json({ message: 'Thought not found' });
+        return res.status(404).json({ error: 'Thought not found.' });
       }
       res.json(thoughtData);
     } catch (err) {
       console.error(err);
-      res.status(400).json(err);
+      res.status(400).json({ error: 'Failed to delete the reaction.' });
     }
   }
 };
