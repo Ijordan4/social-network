@@ -9,7 +9,7 @@ const userController = {
       res.json(userData);
     } catch (err) {
       console.error(err);
-      res.status(500).json(err);
+      res.status(500).json({ error: 'An error occurred while fetching users.' });
     }
   },
 
@@ -19,22 +19,22 @@ const userController = {
         .populate('thoughts friends', '-_id -__v')
         .select('-__v');
       if (!userData) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ error: 'User not found' });
       }
       res.json(userData);
     } catch (err) {
       console.error(err);
-      res.status(500).json(err);
+      res.status(500).json({ error: 'An error occurred while fetching the user.' });
     }
   },
 
-createUser: async (req, res) => {
+  createUser: async (req, res) => {
     try {
       const userData = await User.create(req.body);
       res.json(userData);
     } catch (err) {
       console.error(err);
-      res.status(400).json(err);
+      res.status(400).json({ error: 'Failed to create a new user.' });
     }
   },
 
@@ -42,12 +42,12 @@ createUser: async (req, res) => {
     try {
       const userData = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
       if (!userData) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ error: 'User not found' });
       }
       res.json(userData);
     } catch (err) {
       console.error(err);
-      res.status(404).json(err);
+      res.status(404).json({ error: 'Failed to update the user.' });
     }
   },
 
@@ -55,13 +55,13 @@ createUser: async (req, res) => {
     try {
       const userData = await User.findByIdAndDelete(req.params.userId);
       if (!userData) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ error: 'User not found' });
       }
       await Thought.deleteMany({ username: userData.username });
-      res.json({ message: 'User and associated thoughts successfully deleted' });
+      res.json({ message: 'User thoughts successfully deleted' });
     } catch (err) {
       console.error(err);
-      res.status(500).json(err);
+      res.status(500).json({ error: 'An error occurred while deleting the user.' });
     }
   },
 
@@ -73,12 +73,12 @@ createUser: async (req, res) => {
         { new: true }
       );
       if (!userData) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ error: 'User not found' });
       }
       res.json(userData);
     } catch (err) {
       console.error(err);
-      res.status(400).json(err);
+      res.status(400).json({ error: 'Failed to add friend to the user.' });
     }
   },
 
@@ -90,14 +90,16 @@ createUser: async (req, res) => {
         { new: true }
       );
       if (!userData) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ error: 'User not found' });
       }
       res.json(userData);
     } catch (err) {
       console.error(err);
-      res.status(400).json(err);
+      res.status(400).json({ error: 'Failed to remove friend from the user.' });
     }
   }
 };
 
 module.exports = userController;
+
+
